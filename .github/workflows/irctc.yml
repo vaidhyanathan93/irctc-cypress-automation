@@ -31,7 +31,8 @@ jobs:
     - run: |
         sudo timedatectl set-timezone Asia/Kolkata
         pip install -r irctc-captcha-solver/requirements.txt
-        python irctc-captcha-solver/app-server.py --host 0.0.0.0 --port 5001
+        python irctc-captcha-solver/app-server.py --host 0.0.0.0 --port 5001 &
+          sleep 15
         PASSWORD=$(jq -r '.inputs.PASSWORD' $GITHUB_EVENT_PATH)
         USERNAME=$(jq -r '.inputs.USERNAME' $GITHUB_EVENT_PATH)
         UPI_ID=$(jq -r '.inputs.UPI_ID' $GITHUB_EVENT_PATH)
@@ -55,7 +56,8 @@ jobs:
     - name: Installing Cypress & Running IRCTC Cypress Automation
       run: |
         npm install cypress
-        npx cypress run --browser chrome --headed --record --key a15b31a6-b9ee-4678-b9ac-f45a190851fe --env UPI_ID=${{ inputs.UPI_ID || '' }},USERNAME=${{ inputs.USERNAME || secrets.USERNAME }},PASSWORD=${{ inputs.PASSWORD || secrets.PASSWORD }}
+        npm run start-booking
+        # npx cypress run --browser chrome --headed --record --key a15b31a6-b9ee-4678-b9ac-f45a190851fe --env UPI_ID=${{ inputs.UPI_ID || '' }},USERNAME=${{ inputs.USERNAME || secrets.USERNAME }},PASSWORD=${{ inputs.PASSWORD || secrets.PASSWORD }}
 
     # - name: Running IRCTC Cypress Script
     #   uses: cypress-io/github-action@v6
